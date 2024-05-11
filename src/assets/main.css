@@ -1,0 +1,45 @@
+@import "./base.css";
+
+body {
+  --c-main: #010101ff;
+  --c-second: #484450ff;
+  --c-highlight: #1ed760ff;
+  --c-blue: #4200f3ff;
+  --c-indigo: #8a8ed4ff;
+  --c-text: #f4f4f4;
+  margin: auto;
+  background-color: var(--c-main);
+  color: var(--c-text);
+}
+
+/* Styles for standard screen sizes */
+/* For screens up to 600px wide */
+@media screen and (max-width: 600px) {
+  /* Your CSS rules for small screens here */
+  body {
+    font-size: 14px;
+    margin: 0.5rem;
+  }
+}
+
+/* For screens between 600px and 900px wide */
+@media screen and (min-width: 601px) and (max-width: 900px) {
+  /* Your CSS rules for medium screens here */
+  body {
+    max-width: 800px;
+    font-size: 16px;
+    margin: 0.5rem;
+  }
+}
+
+/* For screens larger than 900px wide */
+@media screen and (min-width: 901px) {
+  /* Your CSS rules for large screens here */
+
+  body {
+    display: grid;
+    max-width: 1280px;
+    font-size: 16px;
+    padding: 1.25rem 0rem 0rem 0rem;
+  }
+}
