@@ -70,4 +70,18 @@ header > div > span {
 .ant-picker .ant-picker-input {
   cursor: pointer;
 }
+@media screen and (max-width: 600px) {
+  header {
+    display: flex;
+  }
+  header > div {
+    max-width: 240px;
+  }
+  header > div > span {
+    margin-top: 0.5rem;
+  }
+  header > div > div {
+    margin-top: 0.5rem;
+  }
+}
 </style>
