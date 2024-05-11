@@ -4,6 +4,7 @@ body {
   --c-main: #010101ff;
   --c-second: #484450ff;
   --c-highlight: #1ed760ff;
+  --c-h-highlight: rgb(55, 255, 48);
   --c-blue: #4200f3ff;
   --c-indigo: #8a8ed4ff;
   --c-text: #f4f4f4;
