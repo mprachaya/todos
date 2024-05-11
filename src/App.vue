@@ -1,6 +1,12 @@
 <template>
   <header>
-    todos application <span><InsertRowAboveOutlined /></span>
+    <span><AliwangwangOutlined />todos</span>
+    <div>
+      <span>sDate</span>
+      <a-date-picker v-model:value="sDate" size="small" />
+      <span>eDate</span>
+      <a-date-picker v-model:value="sDate" size="small" />
+    </div>
   </header>
   <body>
     <router-view />
@@ -8,7 +14,9 @@
 </template>
 
 <script setup>
-import { InsertRowAboveOutlined } from "@ant-design/icons-vue";
+import { AliwangwangOutlined } from "@ant-design/icons-vue";
+
+// import { InsertRowAboveOutlined } from "@ant-design/icons-vue";
 </script>
 
 <style scoped>
@@ -17,7 +25,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 1rem 0rem 0.5rem 0rem;
+  margin: 1rem 0rem 0rem 0rem;
   padding: 1.75rem;
   background-color: rgba(155, 155, 155, 0.1);
   background-image: linear-gradient(
@@ -31,11 +39,35 @@ header {
   text-transform: uppercase;
   font-weight: bold;
 }
+header > span > span {
+  font-size: 20px;
+  margin-right: 0.25rem;
+}
 header > span {
-  padding: 0.75rem 1.125rem 0.75rem 1.125rem;
-  border: solid 1px rgba(125, 125, 125, 0.4);
-  border-radius: 2rem;
-  background-color: rgba(0, 0, 0, 0.75);
-  color: var(--c-highlight);
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+header > div:nth-child(1) {
+  font-size: 14px;
+  text-transform: none;
+}
+
+header > div:nth-child(2) {
+  font-size: 14px;
+  text-transform: none;
+  margin-top: 0.5rem;
+}
+header > div > span {
+  margin: 0 1rem 0 1rem;
+}
+
+.ant-picker {
+  border-radius: 12px;
+  /* background: var(--c-main); */
+  border: none;
+}
+.ant-picker .ant-picker-input {
+  cursor: pointer;
 }
 </style>
