@@ -80,10 +80,41 @@
     <a-modal
       class="custom-modal-style"
       v-model:open="openNewTask"
-      ok-text="Create Task"
-      @ok="handleSubmitTask"
+      :footer="null"
     >
-      <p>Some contents.......................</p>
+      <form @submit.prevent="handleSubmitTask">
+        <div>
+          <label for="text">Text:</label>
+          <input type="text" id="text" v-model="form.text" required />
+        </div>
+        <div>
+          <label for="description">Description:</label>
+          <textarea
+            id="description"
+            v-model="form.description"
+            required
+          ></textarea>
+        </div>
+        <div>
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" v-model="form.startDate" required />
+        </div>
+        <div>
+          <label for="endDate">End Date:</label>
+          <input type="date" id="endDate" v-model="form.endDate" required />
+        </div>
+        <div>
+          <label for="priority">Priority:</label>
+          <select id="priority" v-model="form.priority" required>
+            <option value="minor">Minor</option>
+            <option value="major">Major</option>
+            <option value="low">Low</option>
+            <!-- Add more options if needed -->
+          </select>
+        </div>
+
+        <button type="submit">+ Create Task</button>
+      </form>
     </a-modal>
   </div>
 </template>
@@ -178,12 +209,33 @@ const currentPage = ref(1);
 const pageSize = ref(5);
 const sortType = ref("");
 const openNewTask = ref(false);
+const form = ref({
+  id: 0,
+  text: "",
+  description: "",
+  startDate: "",
+  endDate: "",
+  priority: "minor",
+  completed: false,
+});
 
 const showModal = () => {
   openNewTask.value = true;
 };
-const handleSubmitTask = (newTodo) => {
-  console.log("newTodo", newTodo);
+const handleSubmitTask = () => {
+  if (form.value.startDate > form.value.endDate) {
+    return alert("End Date cannot be earlier than Start Date.");
+  }
+  // console.log("Form submitted:", form.value);
+  const maxId = Math.max(...todos.value.map((todo) => todo.id));
+  form.value.id = maxId;
+  const updateTodos = [form.value, ...todos.value];
+  todos.value = updateTodos;
+  localStorage.setItem("todos", JSON.stringify(todos.value));
+
+  openNewTask.value = false;
+
+  // todos.value = updateTodos;
 };
 
 const todos = ref([]);
