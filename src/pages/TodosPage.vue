@@ -2,7 +2,7 @@
   <div class="todos-container">
     <div class="todos-filters">
       <div><SearchOutlined /></div>
-      <div>
+      <div :class="{ activeBin: showBin }" @click="showBin = !showBin">
         <DeleteOutlined />
         <div>{{ binCount }}</div>
       </div>
@@ -37,9 +37,9 @@
         </div>
       </div>
 
-      <ul class="todo-display custom-bullet">
+      <ul v-if="!showBin" class="todo-display custom-bullet">
         <li
-          v-for="todo in paginatedTodos(todos)"
+          v-for="todo in paginatedTodos(todosTemp)"
           :key="todo.id"
           :class="{ li_completed: todo.completed }"
         >
@@ -72,7 +72,34 @@
           ></span>
         </li>
       </ul>
-
+      <ul v-if="showBin" class="todo-display custom-bullet">
+        <li v-for="todo in paginatedTodos(todosBin, true)" :key="todo.id">
+          <span>
+            {{ todo.text }}
+            <div class="sm-date">
+              sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
+            </div>
+            <div class="todo-details">
+              {{ todo.description }}
+            </div>
+          </span>
+          <span
+            :class="{
+              major: todo.priority === 'major',
+              minor: todo.priority === 'minor',
+              low: todo.priority === 'low',
+            }"
+            >{{ todo.priority }}</span
+          >
+          <div>
+            sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
+          </div>
+          <span
+            ><div role="button" @click="handleRedoTask(todo.id)">
+              <RedoOutlined /></div
+          ></span>
+        </li>
+      </ul>
       <a-pagination
         @change="handlePageChange"
         class="pagination"
@@ -112,8 +139,8 @@
         <div>
           <label for="priority">Priority:</label>
           <select id="priority" v-model="form.priority" required>
-            <option value="minor">Minor</option>
             <option value="major">Major</option>
+            <option value="minor">Minor</option>
             <option value="low">Low</option>
             <!-- Add more options if needed -->
           </select>
@@ -125,7 +152,11 @@
   </div>
 </template>
 <script setup>
-import { SearchOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import {
+  SearchOutlined,
+  DeleteOutlined,
+  RedoOutlined,
+} from "@ant-design/icons-vue";
 
 import { onMounted, ref } from "vue";
 // const todosDummy = ref([
@@ -224,6 +255,7 @@ const pageSize = ref(5);
 const sortType = ref("");
 const openNewTask = ref(false);
 const binCount = ref(0);
+const showBin = ref(false);
 const form = ref({
   id: 0,
   text: "",
@@ -238,6 +270,11 @@ const form = ref({
 const showModal = () => {
   openNewTask.value = true;
 };
+const handleUpdateBin = () => {
+  const binItem = todosTemp.value.filter((todo) => todo.isDeleted);
+  todosBin.value = binItem;
+};
+
 const handleSubmitTask = () => {
   if (form.value.startDate > form.value.endDate) {
     return alert("End Date cannot be earlier than Start Date.");
@@ -247,6 +284,7 @@ const handleSubmitTask = () => {
   form.value.id = maxId;
   const updateTodos = [form.value, ...todos.value];
   todos.value = updateTodos;
+  todosTemp.value = updateTodos;
   localStorage.setItem("todos", JSON.stringify(todos.value));
   openNewTask.value = false;
 };
@@ -255,8 +293,29 @@ const handleBinCount = () => {
   if (!todos.value.length) return;
   else {
     const count = todos.value.filter((todo) => todo.isDeleted);
-    console.log(count);
+    // console.log(count);
     binCount.value = count.length;
+  }
+};
+
+const handleRedoTask = (todoId) => {
+  if (!todoId) return;
+  else {
+    const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
+    if (todoIndex !== -1) {
+      const result = confirm(
+        "Restore this todo: " + todos.value[todoIndex].text
+      );
+      if (result) {
+        todos.value[todoIndex].isDeleted = false;
+        todosTemp.value = todos.value;
+        handleBinCount();
+        handleUpdateBin();
+        localStorage.setItem("todos", JSON.stringify(todos.value));
+      } else {
+        return;
+      }
+    } else return;
   }
 };
 
@@ -270,7 +329,9 @@ const handleRemoveToBin = (todoId) => {
       );
       if (result) {
         todos.value[todoIndex].isDeleted = true;
+        todosTemp.value = todos.value;
         handleBinCount();
+        handleUpdateBin();
         localStorage.setItem("todos", JSON.stringify(todos.value));
       } else {
         return;
@@ -280,6 +341,8 @@ const handleRemoveToBin = (todoId) => {
 };
 
 const todos = ref([]);
+const todosTemp = ref([]);
+const todosBin = ref([]);
 const toggleComplete = async (todoId) => {
   // console.log("toggleComplete");
   const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
@@ -295,12 +358,12 @@ const handlePageChange = (page) => {
   currentPage.value = page;
 };
 
-const filteredTodos = () => {
-  if (!todos.value) {
+const filteredTodos = (todosArray) => {
+  if (!todosArray) {
     return;
   }
   // Partition todos into two arrays based on priority matching sortType
-  const [priorityMatch, otherTodos] = todos.value.reduce(
+  const [priorityMatch, otherTodos] = todosArray.reduce(
     (acc, todo) => {
       if (todo.priority === sortType.value) {
         acc[0].push(todo);
@@ -322,20 +385,24 @@ const filteredTodos = () => {
   return priorityMatch.concat(otherTodos);
 };
 
-const paginatedTodos = (todos) => {
+const paginatedTodos = (todosArray, bin) => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
 
   // console.log("filterTodos", filterTodos);
   if (sortType.value) {
-    const sortTodos = filteredTodos();
+    const sortTodos = filteredTodos(todosArray);
     const filterTodosBySort = sortTodos.filter((todo) => !todo.isDeleted);
-
-    return (todos.value = filterTodosBySort.slice(startIndex, endIndex));
+    // console.log(filterTodosBySort.slice(startIndex, endIndex));
+    return (todosArray.value = filterTodosBySort.slice(startIndex, endIndex));
   } else {
-    const filterTodos = todos.filter((todo) => !todo.isDeleted);
-
-    return filterTodos.slice(startIndex, endIndex);
+    if (!bin) {
+      const filterTodos = todosArray.filter((todo) => !todo.isDeleted);
+      // console.log(todosArray);
+      return filterTodos.slice(startIndex, endIndex);
+    } else {
+      return todosArray.slice(startIndex, endIndex);
+    }
   }
 };
 
@@ -355,6 +422,8 @@ onMounted(() => {
   // localStorage.setItem("todos", JSON.stringify(todosDummy.value));
   const getTodos = JSON.parse(localStorage.getItem("todos"));
   todos.value = getTodos;
+  todosTemp.value = getTodos;
+  handleUpdateBin();
   handleBinCount();
 });
 </script>
