@@ -124,7 +124,7 @@
 <script setup>
 import { SearchOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 // const todosDummy = ref([
 //   {
 //     id: 1,
@@ -257,7 +257,7 @@ const handleRemoveToBin = (todoId) => {
       );
       if (result) {
         todos.value[todoIndex].isDeleted = true;
-        console.log(todos.value[todoIndex]);
+        localStorage.setItem("todos", JSON.stringify(todos.value));
       } else {
         return;
       }
@@ -266,7 +266,7 @@ const handleRemoveToBin = (todoId) => {
 };
 
 const todos = ref([]);
-const toggleComplete = (todoId) => {
+const toggleComplete = async (todoId) => {
   // console.log("toggleComplete");
   const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
   if (todoIndex !== -1) {
@@ -311,12 +311,17 @@ const filteredTodos = () => {
 const paginatedTodos = (todos) => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
+
+  // console.log("filterTodos", filterTodos);
   if (sortType.value) {
     const sortTodos = filteredTodos();
+    const filterTodosBySort = sortTodos.filter((todo) => !todo.isDeleted);
 
-    return (todos.value = sortTodos.slice(startIndex, endIndex));
+    return (todos.value = filterTodosBySort.slice(startIndex, endIndex));
   } else {
-    return todos.slice(startIndex, endIndex);
+    const filterTodos = todos.filter((todo) => !todo.isDeleted);
+
+    return filterTodos.slice(startIndex, endIndex);
   }
 };
 
