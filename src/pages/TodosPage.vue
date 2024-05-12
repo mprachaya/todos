@@ -2,7 +2,10 @@
   <div class="todos-container">
     <div class="todos-filters">
       <div><SearchOutlined /></div>
-      <div><DeleteOutlined /></div>
+      <div>
+        <DeleteOutlined />
+        <div>{{ binCount }}</div>
+      </div>
     </div>
     <div class="todos-list-container">
       <div class="todo-list-header">
@@ -124,7 +127,7 @@
 <script setup>
 import { SearchOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
-import { nextTick, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 // const todosDummy = ref([
 //   {
 //     id: 1,
@@ -220,6 +223,7 @@ const currentPage = ref(1);
 const pageSize = ref(5);
 const sortType = ref("");
 const openNewTask = ref(false);
+const binCount = ref(0);
 const form = ref({
   id: 0,
   text: "",
@@ -247,6 +251,15 @@ const handleSubmitTask = () => {
   openNewTask.value = false;
 };
 
+const handleBinCount = () => {
+  if (!todos.value.length) return;
+  else {
+    const count = todos.value.filter((todo) => todo.isDeleted);
+    console.log(count);
+    binCount.value = count.length;
+  }
+};
+
 const handleRemoveToBin = (todoId) => {
   if (!todoId) return;
   else {
@@ -257,6 +270,7 @@ const handleRemoveToBin = (todoId) => {
       );
       if (result) {
         todos.value[todoIndex].isDeleted = true;
+        handleBinCount();
         localStorage.setItem("todos", JSON.stringify(todos.value));
       } else {
         return;
@@ -341,6 +355,7 @@ onMounted(() => {
   // localStorage.setItem("todos", JSON.stringify(todosDummy.value));
   const getTodos = JSON.parse(localStorage.getItem("todos"));
   todos.value = getTodos;
+  handleBinCount();
 });
 </script>
 <style lang="scss">
