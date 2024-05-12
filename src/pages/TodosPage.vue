@@ -10,9 +10,27 @@
           <button class="newtask-btn" @click="showModal">+ New Task</button>
         </div>
         <div class="todo-sorts">
-          <div>major</div>
-          <div>minor</div>
-          <div>low</div>
+          <div
+            class="sortShadow"
+            :class="{ major: sortType === 'major' }"
+            @click="handleSortChange('major')"
+          >
+            <a>major</a>
+          </div>
+          <div
+            class="sortShadow"
+            :class="{ minor: sortType === 'minor' }"
+            @click="handleSortChange('minor')"
+          >
+            <a>minor</a>
+          </div>
+          <div
+            class="sortShadow"
+            :class="{ low: sortType === 'low' }"
+            @click="handleSortChange('low')"
+          >
+            <a>low</a>
+          </div>
         </div>
       </div>
 
@@ -158,6 +176,7 @@ import { onMounted, ref } from "vue";
 
 const currentPage = ref(1);
 const pageSize = ref(5);
+const sortType = ref("");
 const openNewTask = ref(false);
 
 const showModal = () => {
@@ -182,10 +201,55 @@ const toggleComplete = (todoId) => {
 const handlePageChange = (page) => {
   currentPage.value = page;
 };
+
+const filteredTodos = () => {
+  if (!todos.value) {
+    return;
+  }
+  // Partition todos into two arrays based on priority matching sortType
+  const [priorityMatch, otherTodos] = todos.value.reduce(
+    (acc, todo) => {
+      if (todo.priority === sortType.value) {
+        acc[0].push(todo);
+      } else {
+        acc[1].push(todo);
+      }
+      return acc;
+    },
+    [[], []]
+  );
+
+  // Sort the array with priority matching sortType to the top
+  priorityMatch.sort((a, b) => {
+    // Implement your sorting logic here for priority matched todos
+    return a.priority - b.priority;
+  });
+
+  // Concatenate the sorted priority matched todos with other todos
+  return priorityMatch.concat(otherTodos);
+};
+
 const paginatedTodos = (todos) => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
-  return todos.slice(startIndex, endIndex);
+  if (sortType.value) {
+    const sortTodos = filteredTodos();
+
+    return (todos.value = sortTodos.slice(startIndex, endIndex));
+  } else {
+    return todos.slice(startIndex, endIndex);
+  }
+};
+
+const handleSortChange = (sortName) => {
+  if (!sortName) return;
+  // console.log(sortName);
+  if (sortType.value === sortName) {
+    sortType.value = "";
+  } else {
+    sortType.value = sortName;
+  }
+  // console.log(sortType.value);
 };
 
 onMounted(() => {

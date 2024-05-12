@@ -220,17 +220,40 @@ li:hover {
   display: none;
   font-size: 11px;
 }
+.sortShadow {
+  font-size: 10px;
+  border-radius: 24px;
+  text-transform: uppercase;
+  a {
+    font-weight: bold;
+  }
+}
+.sortShadow:hover {
+  transition: all 100ms ease-in;
+  border-color: var(--c-highlight);
+  box-shadow: rgba(46, 255, 57, 0.2) 0px 20px 25px -5px,
+    rgba(147, 255, 192, 0.1) 0px 10px 10px -5px;
+}
 
 .major {
   color: #1ed760ff;
+  a {
+    color: #1ed760ff;
+  }
 }
 
 .minor {
   color: #15964d;
+  a {
+    color: #15964d;
+  }
 }
 
 .low {
   color: #10783d;
+  a {
+    color: #10783d;
+  }
 }
 
 .completed {
