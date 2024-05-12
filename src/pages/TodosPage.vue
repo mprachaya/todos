@@ -63,7 +63,10 @@
           <div>
             sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
           </div>
-          <span><DeleteOutlined /></span>
+          <span
+            ><div role="button" @click="handleRemoveToBin(todo.id)">
+              <DeleteOutlined /></div
+          ></span>
         </li>
       </ul>
 
@@ -132,6 +135,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-05-15",
 //     priority: "major",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 2,
@@ -142,6 +146,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-05-20",
 //     priority: "minor",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 3,
@@ -152,6 +157,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-05-25",
 //     priority: "low",
 //     completed: true,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 4,
@@ -162,6 +168,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-05-30",
 //     priority: "major",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 5,
@@ -172,6 +179,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-06-05",
 //     priority: "minor",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 6,
@@ -182,6 +190,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-06-10",
 //     priority: "major",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 7,
@@ -191,6 +200,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-06-15",
 //     priority: "major",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   {
 //     id: 8,
@@ -201,6 +211,7 @@ import { onMounted, ref } from "vue";
 //     endDate: "2024-06-20",
 //     priority: "minor",
 //     completed: false,
+//     isDeleted: false,
 //   },
 //   // Add more todos as needed
 // ]);
@@ -217,6 +228,7 @@ const form = ref({
   endDate: "",
   priority: "minor",
   completed: false,
+  isDeleted: false,
 });
 
 const showModal = () => {
@@ -232,10 +244,25 @@ const handleSubmitTask = () => {
   const updateTodos = [form.value, ...todos.value];
   todos.value = updateTodos;
   localStorage.setItem("todos", JSON.stringify(todos.value));
-
   openNewTask.value = false;
+};
 
-  // todos.value = updateTodos;
+const handleRemoveToBin = (todoId) => {
+  if (!todoId) return;
+  else {
+    const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
+    if (todoIndex !== -1) {
+      const result = confirm(
+        "Delete this todo: " + todos.value[todoIndex].text
+      );
+      if (result) {
+        todos.value[todoIndex].isDeleted = true;
+        console.log(todos.value[todoIndex]);
+      } else {
+        return;
+      }
+    } else return;
+  }
 };
 
 const todos = ref([]);
@@ -305,6 +332,7 @@ const handleSortChange = (sortName) => {
 };
 
 onMounted(() => {
+  // localStorage.clear();
   // localStorage.setItem("todos", JSON.stringify(todosDummy.value));
   const getTodos = JSON.parse(localStorage.getItem("todos"));
   todos.value = getTodos;
