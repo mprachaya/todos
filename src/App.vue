@@ -2,10 +2,7 @@
   <header>
     <span><AliwangwangOutlined />todos</span>
     <div>
-      <span>sDate</span>
-      <a-date-picker v-model:value="sDate" size="small" />
-      <span>eDate</span>
-      <a-date-picker v-model:value="sDate" size="small" />
+      <a-range-picker v-model:value="dateFilter" />
     </div>
   </header>
   <body>

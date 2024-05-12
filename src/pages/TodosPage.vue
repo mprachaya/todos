@@ -2,9 +2,6 @@
   <div class="todos-container">
     <div class="todos-filters">
       <div><SearchOutlined /></div>
-      <div>major</div>
-      <div>minor</div>
-      <div>low</div>
       <div><DeleteOutlined /></div>
     </div>
     <div class="todos-list-container">
@@ -12,11 +9,16 @@
         <div class="todo-add-btn">
           <button class="newtask-btn" @click="showModal">+ New Task</button>
         </div>
+        <div class="todo-sorts">
+          <div>major</div>
+          <div>minor</div>
+          <div>low</div>
+        </div>
       </div>
 
       <ul class="todo-display custom-bullet">
         <li
-          v-for="todo in todos"
+          v-for="todo in paginatedTodos(todos)"
           :key="todo.id"
           :class="{ li_completed: todo.completed }"
         >
@@ -25,11 +27,9 @@
             :class="{ completed: todo.completed }"
           >
             {{ todo.text }}
-            <span class="sm-date"
-              >sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{
-                todo.endDate
-              }}</span
-            >
+            <div class="sm-date">
+              sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
+            </div>
             <div class="todo-details">
               {{ todo.description }}
             </div>
@@ -42,12 +42,22 @@
             }"
             >{{ todo.priority }}</span
           >
-          <span
-            >sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}</span
-          >
+          <div>
+            sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
+          </div>
           <span><DeleteOutlined /></span>
         </li>
       </ul>
+
+      <a-pagination
+        @change="handlePageChange"
+        class="pagination"
+        size="small"
+        :total="todos.length > 0 ? todos.length : 0"
+        :showSizeChanger="false"
+        :current="currentPage"
+        :pageSize="pageSize"
+      />
     </div>
     <a-modal
       class="custom-modal-style"
@@ -146,6 +156,8 @@ import { onMounted, ref } from "vue";
 //   // Add more todos as needed
 // ]);
 
+const currentPage = ref(1);
+const pageSize = ref(5);
 const openNewTask = ref(false);
 
 const showModal = () => {
@@ -165,6 +177,15 @@ const toggleComplete = (todoId) => {
   } else {
     return;
   }
+};
+
+const handlePageChange = (page) => {
+  currentPage.value = page;
+};
+const paginatedTodos = (todos) => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return todos.slice(startIndex, endIndex);
 };
 
 onMounted(() => {

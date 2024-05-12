@@ -4,7 +4,7 @@
   gap: 0.5rem;
 }
 .todos-filters {
-  display: flex;
+  // display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
@@ -19,28 +19,31 @@
   );
 }
 .todos-filters > div {
+  font-size: 22px;
   opacity: 0.75;
-  margin: auto;
+  margin: 2rem auto 2rem auto;
   text-align: center;
-  width: 60px;
-  height: 60px;
-  padding: 1.5rem 0 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
   cursor: pointer;
   border-radius: 24px;
 }
-.todos-filters > div:nth-child(1) {
-  font-size: 24px;
-}
-.todos-filters > div:last-child {
-  font-size: 24px;
-  margin-bottom: 2rem;
-}
-.todos-filters > div:not(:first-child, :last-child) {
-  letter-spacing: 1.75px;
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: bold;
-}
+// .todos-filters > div:nth-child(1) {
+//   font-size: 24px;
+// }
+// .todos-filters > div:last-child {
+//   font-size: 24px;
+//   margin-bottom: 2rem;
+// }
+// .todos-filters > div:not(:first-child, :last-child) {
+//   letter-spacing: 1.75px;
+//   text-transform: uppercase;
+//   font-size: 12px;
+//   font-weight: bold;
+// }
 .todos-filters > div:hover {
   transition: all 100ms ease-in;
   opacity: 1;
@@ -57,7 +60,7 @@
 .todo-list-header {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: space-between;
   padding-bottom: 0.5rem;
   // border-bottom: solid 1px rgba(125, 125, 125, 0.4);
 }
@@ -69,6 +72,18 @@
 .todo-header-label > span {
   margin-left: 0.5rem;
 }
+.todo-list-header .todo-sorts {
+  display: flex;
+  gap: 2rem;
+  margin-right: 4.2rem;
+}
+
+.todo-sorts > div {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+  color: var(--c-light-gray);
+}
+
 .todos-list-container {
   // border: solid 1px rgba(125, 125, 125, 0.4);
   border-radius: 1.25rem;
@@ -93,14 +108,14 @@
 }
 .newtask-btn:hover {
   transition: all 100ms ease-in;
-  text-decoration: underline;
-  background-color: var(--c-main);
-  color: var(--c-highlight);
+  border-color: var(--c-highlight);
+  box-shadow: rgba(46, 255, 57, 0.2) 0px 20px 25px -5px,
+    rgba(147, 255, 192, 0.1) 0px 10px 10px -5px;
+  // text-decoration: underline;
+  // background-color: var(--c-main);
+  // color: var(--c-highlight);
 }
 
-ul {
-  list-style-type: none;
-}
 li {
   opacity: 0.8;
   display: flex;
@@ -110,49 +125,83 @@ li {
   padding-bottom: 0.75rem;
   border-bottom: solid 1px rgba(125, 125, 125, 0.4);
 }
-li:last-child {
+li:last-child,
+:not(.pagination) {
   border-bottom: none;
 }
 li:hover {
   opacity: 1;
   cursor: pointer;
 }
+.ant-pagination .ant-pagination-item-active {
+  background-color: var(--c-gray) !important;
+  border-color: var(--c-highlight) !important;
+}
+.ant-pagination .ant-pagination-item-active a {
+  color: var(--c-highlight);
+}
+.ant-pagination.ant-pagination-mini
+  .ant-pagination-next
+  .ant-pagination-item-link {
+  margin-top: 0.25rem;
+  color: var(--c-highlight);
+}
+.ant-pagination .ant-pagination-prev .ant-pagination-item-link {
+  margin-top: 0.25rem;
+  color: var(--c-highlight);
+}
+.ant-pagination :not(.ant-pagination-item-active) a {
+  color: var(--c-hard-highlight);
+}
+.ant-pagination .ant-pagination-item-active:hover a {
+  color: #10783d;
+}
 
-li:before {
+.ant-pagination {
+  display: flex;
+  justify-content: end;
+  margin: 0 3rem 0 0;
+}
+
+.pagination > li {
+  content: none;
+}
+
+:not(.pagination) > li:not(.li_completed):before {
   content: "\25C6";
   font-size: 10px;
 }
 
-li > span {
+:not(.pagination) > li > span {
   margin-left: 0.75rem;
   width: 100%;
   font-size: 14px;
   transition: all 100ms ease-in;
 }
-li > span:nth-child(1) {
+:not(.pagination) > li > div:nth-child(1) {
   position: relative;
   white-space: nowrap;
 }
 
-li > span:nth-child(1):hover {
+:not(.pagination) > li > div:nth-child(1):hover {
   .todo-details {
     transition: all 0.2s ease-in-out;
     opacity: 1;
   }
 }
-li > span:nth-child(2) {
+:not(.pagination) > li > span:nth-child(2) {
   width: 20%;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 12px;
   letter-spacing: 1.5px;
 }
-li > span:nth-child(3) {
-  display: contents;
-  font-size: 12px;
+:not(.pagination) > li :nth-child(3) {
+  display: block;
+  font-size: 10px;
 }
 
-li > span:last-child {
+:not(.pagination) > li > span:last-child {
   width: fit-content;
   font-size: 14px;
   margin-right: 1rem;
@@ -161,13 +210,13 @@ li > span:last-child {
   transform: translateX(6px);
 }
 
-li:hover span:last-child {
+:not(.pagination) > li:hover span:last-child {
   opacity: 1;
   color: var(--c-highlight);
   transform: translateX(-6px);
 }
 
-li > span:nth-child(1) > .sm-date {
+.sm-date {
   display: none;
   font-size: 11px;
 }
@@ -191,8 +240,8 @@ li > span:nth-child(1) > .sm-date {
   text-decoration: line-through;
 }
 .li_completed:before {
-  font-size: 12px;
   content: "(Done)";
+  font-size: 12px;
   color: var(--c-highlight);
 }
 .todo-details {
@@ -248,29 +297,36 @@ li > span:nth-child(1) > .sm-date {
   // .todos-filters {
   //   height: 12vh;
   // }
-  li > span:nth-child(3) {
+  .todo-details {
     display: none;
   }
-  li > span:nth-child(1) > .sm-date {
-    display: block;
+  li :nth-child(2) {
+    margin-right: -6rem;
   }
-  li > span:nth-child(1):hover {
+  li :nth-child(3) {
+    color: var(--c-gray);
+    user-select: none;
+  }
+  .sm-date {
+    display: block;
+    font-size: 10px;
+  }
+  li div:nth-child(1):hover {
     .todo-details {
       transition: all 0.2s ease-in-out;
       opacity: 0;
     }
   }
   .todos-filters {
+    display: flex;
     flex-direction: row;
     padding: 0;
-    justify-content: center;
+    justify-content: space-between;
   }
-  .todos-filters > div:nth-child(1) {
-    padding-top: 0.75rem;
+  .todos-filters > div {
+    font-size: 16px;
+    margin: 0;
   }
-  // .todos-filters > div:not(:nth-child(1)) {
-  //   padding-top: 2rem;
-  // }
 }
 
 @media screen and (min-width: 601px) and (max-width: 900px) {
@@ -286,7 +342,17 @@ li > span:nth-child(1) > .sm-date {
   .todos-filters > div:not(:nth-child(1)) {
     padding-top: 2rem;
   }
-  // .todos-filters {
-  //   height: 12vh;
-  // }
+  .todo-details {
+    display: none;
+  }
+  .todos-filters {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    justify-content: space-between;
+  }
+  .todos-filters > div {
+    font-size: 16px;
+    margin: 0;
+  }
 }

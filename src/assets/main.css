@@ -3,6 +3,7 @@
 body {
   --c-main: #010101ff;
   --c-gray: rgb(15, 15, 15);
+  --c-light-gray: rgb(73, 73, 73);
   --c-second: #484450ff;
   --c-highlight: #1ed760ff;
   --c-hard-highlight: rgb(15, 87, 47);
