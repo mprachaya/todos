@@ -2,7 +2,10 @@
   <div class="todos-container">
     <div class="todos-filters">
       <div><SearchOutlined /></div>
-      <div :class="{ activeBin: showBin }" @click="showBin = !showBin">
+      <div
+        :class="{ activeBin: showBin }"
+        @click="showBin = !showBin"
+      >
         <DeleteOutlined />
         <div>{{ binCount }}</div>
       </div>
@@ -10,7 +13,12 @@
     <div class="todos-list-container">
       <div class="todo-list-header">
         <div class="todo-add-btn">
-          <button class="newtask-btn" @click="showModal">+ New Task</button>
+          <button
+            class="newtask-btn"
+            @click="showModal"
+          >
+            + New Task
+          </button>
         </div>
         <div class="todo-sorts">
           <div
@@ -37,7 +45,10 @@
         </div>
       </div>
 
-      <ul v-if="!showBin" class="todo-display custom-bullet">
+      <ul
+        v-if="!showBin"
+        class="todo-display custom-bullet"
+      >
         <li
           v-for="todo in paginatedTodos(todosTemp)"
           :key="todo.id"
@@ -48,9 +59,7 @@
             :class="{ completed: todo.completed }"
           >
             {{ todo.text }}
-            <div class="sm-date">
-              sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
-            </div>
+            <div class="sm-date">sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}</div>
             <div class="todo-details">
               {{ todo.description }}
             </div>
@@ -63,22 +72,27 @@
             }"
             >{{ todo.priority }}</span
           >
-          <div>
-            sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
-          </div>
+          <div>sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}</div>
           <span
-            ><div role="button" @click="handleRemoveToBin(todo.id)">
+            ><div
+              role="button"
+              @click="handleRemoveToBin(todo.id)"
+            >
               <DeleteOutlined /></div
           ></span>
         </li>
       </ul>
-      <ul v-if="showBin" class="todo-display custom-bullet">
-        <li v-for="todo in paginatedTodos(todosBin, true)" :key="todo.id">
+      <ul
+        v-if="showBin"
+        class="todo-display custom-bullet"
+      >
+        <li
+          v-for="todo in paginatedTodos(todosBin, true)"
+          :key="todo.id"
+        >
           <span>
             {{ todo.text }}
-            <div class="sm-date">
-              sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
-            </div>
+            <div class="sm-date">sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}</div>
             <div class="todo-details">
               {{ todo.description }}
             </div>
@@ -91,24 +105,27 @@
             }"
             >{{ todo.priority }}</span
           >
-          <div>
-            sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}
-          </div>
+          <div>sDate&nbsp;{{ todo.startDate }} eDate&nbsp;{{ todo.endDate }}</div>
           <span
-            ><div role="button" @click="handleRedoTask(todo.id)">
+            ><div
+              role="button"
+              @click="handleRedoTask(todo.id)"
+            >
               <RedoOutlined /></div
           ></span>
         </li>
       </ul>
-      <a-pagination
-        @change="handlePageChange"
-        class="pagination"
-        size="small"
-        :total="todos.length > 0 ? todos.length : 0"
-        :showSizeChanger="false"
-        :current="currentPage"
-        :pageSize="pageSize"
-      />
+      <div v-if="todos">
+        <a-pagination
+          @change="handlePageChange"
+          class="pagination"
+          size="small"
+          :total="todos.length > 0 ? todos.length : 0"
+          :showSizeChanger="false"
+          :current="currentPage"
+          :pageSize="pageSize"
+        />
+      </div>
     </div>
     <a-modal
       class="custom-modal-style"
@@ -118,7 +135,12 @@
       <form @submit.prevent="handleSubmitTask">
         <div>
           <label for="text">Text:</label>
-          <input type="text" id="text" v-model="form.text" required />
+          <input
+            type="text"
+            id="text"
+            v-model="form.text"
+            required
+          />
         </div>
         <div>
           <label for="description">Description:</label>
@@ -130,15 +152,29 @@
         </div>
         <div>
           <label for="startDate">Start Date:</label>
-          <input type="date" id="startDate" v-model="form.startDate" required />
+          <input
+            type="date"
+            id="startDate"
+            v-model="form.startDate"
+            required
+          />
         </div>
         <div>
           <label for="endDate">End Date:</label>
-          <input type="date" id="endDate" v-model="form.endDate" required />
+          <input
+            type="date"
+            id="endDate"
+            v-model="form.endDate"
+            required
+          />
         </div>
         <div>
           <label for="priority">Priority:</label>
-          <select id="priority" v-model="form.priority" required>
+          <select
+            id="priority"
+            v-model="form.priority"
+            required
+          >
             <option value="major">Major</option>
             <option value="minor">Minor</option>
             <option value="low">Low</option>
@@ -152,13 +188,9 @@
   </div>
 </template>
 <script setup>
-import {
-  SearchOutlined,
-  DeleteOutlined,
-  RedoOutlined,
-} from "@ant-design/icons-vue";
+import { SearchOutlined, DeleteOutlined, RedoOutlined } from '@ant-design/icons-vue';
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from 'vue';
 // const todosDummy = ref([
 //   {
 //     id: 1,
@@ -252,17 +284,28 @@ import { onMounted, ref } from "vue";
 
 const currentPage = ref(1);
 const pageSize = ref(5);
-const sortType = ref("");
+const sortType = ref('');
 const openNewTask = ref(false);
 const binCount = ref(0);
 const showBin = ref(false);
+const Initialform = ref({
+  id: 0,
+  text: '',
+  description: '',
+  startDate: '',
+  endDate: '',
+  priority: 'major',
+  completed: false,
+  isDeleted: false,
+});
+
 const form = ref({
   id: 0,
-  text: "",
-  description: "",
-  startDate: "",
-  endDate: "",
-  priority: "minor",
+  text: '',
+  description: '',
+  startDate: '',
+  endDate: '',
+  priority: 'major',
   completed: false,
   isDeleted: false,
 });
@@ -271,26 +314,37 @@ const showModal = () => {
   openNewTask.value = true;
 };
 const handleUpdateBin = () => {
+  if (!todosTemp.value) return;
   const binItem = todosTemp.value.filter((todo) => todo.isDeleted);
   todosBin.value = binItem;
 };
 
 const handleSubmitTask = () => {
   if (form.value.startDate > form.value.endDate) {
-    return alert("End Date cannot be earlier than Start Date.");
+    return alert('End Date cannot be earlier than Start Date.');
   }
   // console.log("Form submitted:", form.value);
-  const maxId = Math.max(...todos.value.map((todo) => todo.id));
-  form.value.id = maxId;
-  const updateTodos = [form.value, ...todos.value];
+  var maxId = 0;
+  var updateTodos = [];
+  if (todos.value) {
+    maxId = Math.max(...todos.value.map((todo) => todo.id));
+    form.value.id = maxId;
+    updateTodos = [form.value, ...todos.value];
+  } else {
+    maxId = 1;
+    form.value.id = maxId;
+    updateTodos.push(form.value);
+  }
+
   todos.value = updateTodos;
   todosTemp.value = updateTodos;
-  localStorage.setItem("todos", JSON.stringify(todos.value));
+  localStorage.setItem('todos', JSON.stringify(todos.value));
+  form.value = Initialform.value;
   openNewTask.value = false;
 };
 
 const handleBinCount = () => {
-  if (!todos.value.length) return;
+  if (!todos.value) return;
   else {
     const count = todos.value.filter((todo) => todo.isDeleted);
     // console.log(count);
@@ -303,15 +357,13 @@ const handleRedoTask = (todoId) => {
   else {
     const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
     if (todoIndex !== -1) {
-      const result = confirm(
-        "Restore this todo: " + todos.value[todoIndex].text
-      );
+      const result = confirm('Restore this todo: ' + todos.value[todoIndex].text);
       if (result) {
         todos.value[todoIndex].isDeleted = false;
         todosTemp.value = todos.value;
         handleBinCount();
         handleUpdateBin();
-        localStorage.setItem("todos", JSON.stringify(todos.value));
+        localStorage.setItem('todos', JSON.stringify(todos.value));
       } else {
         return;
       }
@@ -324,15 +376,13 @@ const handleRemoveToBin = (todoId) => {
   else {
     const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
     if (todoIndex !== -1) {
-      const result = confirm(
-        "Delete this todo: " + todos.value[todoIndex].text
-      );
+      const result = confirm('Delete this todo: ' + todos.value[todoIndex].text);
       if (result) {
         todos.value[todoIndex].isDeleted = true;
         todosTemp.value = todos.value;
         handleBinCount();
         handleUpdateBin();
-        localStorage.setItem("todos", JSON.stringify(todos.value));
+        localStorage.setItem('todos', JSON.stringify(todos.value));
       } else {
         return;
       }
@@ -348,7 +398,7 @@ const toggleComplete = async (todoId) => {
   const todoIndex = todos.value.findIndex((todo) => todo.id === todoId);
   if (todoIndex !== -1) {
     todos.value[todoIndex].completed = !todos.value[todoIndex].completed;
-    localStorage.setItem("todos", JSON.stringify(todos.value));
+    localStorage.setItem('todos', JSON.stringify(todos.value));
   } else {
     return;
   }
@@ -386,6 +436,7 @@ const filteredTodos = (todosArray) => {
 };
 
 const paginatedTodos = (todosArray, bin) => {
+  if (!todosArray) return;
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
 
@@ -410,7 +461,7 @@ const handleSortChange = (sortName) => {
   if (!sortName) return;
   // console.log(sortName);
   if (sortType.value === sortName) {
-    sortType.value = "";
+    sortType.value = '';
   } else {
     sortType.value = sortName;
   }
@@ -420,7 +471,7 @@ const handleSortChange = (sortName) => {
 onMounted(() => {
   // localStorage.clear();
   // localStorage.setItem("todos", JSON.stringify(todosDummy.value));
-  const getTodos = JSON.parse(localStorage.getItem("todos"));
+  const getTodos = JSON.parse(localStorage.getItem('todos'));
   todos.value = getTodos;
   todosTemp.value = getTodos;
   handleUpdateBin();
@@ -428,5 +479,5 @@ onMounted(() => {
 });
 </script>
 <style lang="scss">
-@import "../styles/todospage.scss";
+@import '../styles/todospage.scss';
 </style>
